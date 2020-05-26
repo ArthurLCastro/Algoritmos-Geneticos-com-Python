@@ -1,5 +1,6 @@
 # ==================== Importação de Bibliotecas ====================
 from random import *
+import matplotlib.pyplot as plt
 import os
 
 # ========== Limpa o terminal para uma melhor visualização ====================
@@ -33,6 +34,7 @@ class Populacao():
         self.populacao = []
         self.geracao = 0
         self.melhorGeral = Individuo(3, 255)        # Inicializa um indivíduo qualquer
+        self.listaMelhoresDaGeracao = []
 
     def inicializarPopulacao(self, tamanhoCromossomo, valorMaxCromossomo, tamanhoPopulacao):
         self.tamanhoPopulacao = tamanhoPopulacao
@@ -164,7 +166,7 @@ class Populacao():
             if debug_mutacao_2: print("Filho: %s \t\t| Sorteio: %s" % (str(filho.cromossomos), sorteio))
             
             if sorteio < taxaPercMutacao:      # Determina se haverá mutação ou não
-                if debug_mutacao_2: print(" Houve Mutação!")
+                if debug_mutacao_2: print("[DEBUG Mutação] Houve Mutação!")
                 filho.cromossomos[crom] = randrange(0, 256, 1)      # Gera alelo aleatório para o genoma do filho mudar
 
         if debug_mutacao_1: print("[DEBUG Mutação] Depois da Mutação: %s" % filho.cromossomos)
@@ -211,6 +213,8 @@ if debug_ordenando_pop:
         print("> Indivíduo %i \t| Nota %s" % (indice, besouros.populacao[indice].notaAvaliacao))
 
 melhorBesouro = besouros.melhorIndividuoGeral(besouros.populacao[0])      # Melhor Individuo
+
+besouros.listaMelhoresDaGeracao.append(besouros.populacao[0])
 
 print("---------- MELHOR BESOURO DA GERAÇÃO INICIAL ----------")
 print("     > Genoma: %s" % str(besouros.populacao[0].cromossomos))
@@ -263,7 +267,9 @@ for ger in range(numeroGeracoes):
     besouros.ordenarPopulacaoPorNota()     # Ordenar Nova População
 
     melhorBesouro = besouros.melhorIndividuoGeral(besouros.populacao[0])      # Melhor Individuo
-
+    
+    besouros.listaMelhoresDaGeracao.append(besouros.populacao[0])
+    
     if debug_por_geracao:
         print("---------- GERAÇÃO %i ----------" % ger)
         print("> Melhor Indivíduo da Geração: ")
@@ -281,3 +287,19 @@ print("---------- MELHOR BESOURO GERAL ----------")
 print("     > Genoma: %s" % str(melhorBesouro.cromossomos))
 print("     > Nota: %s" % str(melhorBesouro.notaAvaliacao))
 print("     > Geração: %s\n" % str(melhorBesouro.geracao))
+
+# ---------- Lista dos Melhores por Geração ----------
+notasMelhores = []
+
+for ger in range(numeroGeracoes):
+    notasMelhores.append(besouros.listaMelhoresDaGeracao[ger].notaAvaliacao)
+    # print("Geração: %s \t\t| Nota: %s" % (ger, besouros.listaMelhoresDaGeracao[ger].notaAvaliacao))
+
+# ---------- Impressao do gráfico dos melhores de cada geração ----------
+plt.plot(notasMelhores)
+plt.title("Melhores de cada geração")
+plt.xlabel("Geração")
+plt.ylabel("Nota de Avaliação (%)")
+plt.gcf().canvas.set_window_title("Algoritmo Genético - Besouros Escuros")
+
+plt.show()
