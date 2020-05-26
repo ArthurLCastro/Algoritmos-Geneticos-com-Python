@@ -1,7 +1,6 @@
 # ==================== Importação de Bibliotecas ====================
 from algoritmoGenetico import *
 import matplotlib.pyplot as plt
-import graphics
 
 import os
 
@@ -139,6 +138,3 @@ plt.ylabel("Nota de Avaliação (%)")
 plt.gcf().canvas.set_window_title("Algoritmo Genético - Besouros Escuros")
 
 plt.show()
-
-# ---------- Impressao de Besouros Coloridos por Geração ----------
-# ...
